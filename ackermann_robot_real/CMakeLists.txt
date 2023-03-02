@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ackermann_robot_navigation)
+project(ackermann_robot_real)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  sensor_msgs
   tf
 )
 
@@ -206,5 +207,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(odometry scripts/odometry.cpp)
-target_link_libraries(odometry ${catkin_LIBRARIES})
+
+add_executable(odom_publisher scripts/odom_publisher.cpp)
+target_link_libraries(odom_publisher ${catkin_LIBRARIES})

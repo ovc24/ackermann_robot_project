@@ -1,12 +1,32 @@
 <launch>
+    <arg name="x_pos" default="-3.0"/>
+    <arg name="y_pos" default="1.0"/>
+    <arg name="z_pos" default="0.065"/>
     <arg name="cmd_timeout" default="0.5"/>
-    
-    <include file="$(find ackermann_robot_gazebo)/launch/gazebo.launch"/>
+
+    <!--include file="$(find ackermann_robot_gazebo)/launch/gazebo.launch"/-->
     
     <include file="$(find ackermann_robot_description)/launch/display.launch"/>
     
     <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_broadcaster" args="0 0 0 0 0 0 1 ackermann_robot base_footprint" />
     
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find ackermann_robot_gazebo)/worlds/ackermann_house.world"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
+    args="-file $(find ackermann_robot_description)/urdf/ackermann_robot.urdf -urdf -model ackermann_robot -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos)"
+    output="screen" />
+    
+    <!--param name="robot_description" textfile="$(find ackermann_robot_description)/urdf/ackermann_robot.urdf"/-->
+    
+    <!--node name="tf_footprint_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link base_footprint 40" /-->
+    <!--node name="spawn_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -model ackermann_robot -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" /-->
     <node name="controller_spawner" pkg="controller_manager" type="spawner" args="$(find ackermann_robot_gazebo)/config/joint_control_params.yaml"/>
 
     <node name="ackermann_controller" pkg="ackermann_robot_gazebo" type="ackermann_controller">
@@ -22,5 +42,4 @@
     <node name= "cmd_vel_to_ackermann_drive" pkg="ackermann_robot_navigation" type="cmd_vel_to_ackermann_drive.py"/>
 
     <node name="odometry" pkg="ackermann_robot_navigation" type="odometry_gazebo.py"/>
-
 </launch>

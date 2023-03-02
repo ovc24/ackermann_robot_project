@@ -1,0 +1,13 @@
+<launch>
+    <!--param name="robot_description" textfile="$(find ackermann_robot_description)/urdf/ackermann_robot_rviz.urdf"/>
+    <node name="cmd_vel_to_motors" pkg="ackermann_robot_real" type="cmd_vel_to_motors.py"/>
+    <node name="odometry_publisher" pkg="ackermann_robot_real" type="odom_publisher"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/-->
+    <node name="serial_node" pkg="rosserial_python" type="serial_node.py">
+        <param name="port" type="string" value="/dev/ttyACM0"/>
+    </node>
+    <node name="imu_node" pkg="ackermann_robot_real" type="imu_node.py"/>
+    <node name="imu_filter_node_for_orientation" pkg="imu_complementary_filter" type="complementary_filter_node"/>
+    <node name="rpy_tf" pkg="ackermann_robot_real" type="tf_broadcaster_imu.py"/>
+</launch>

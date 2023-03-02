@@ -1,10 +1,13 @@
 <launch>
+  <arg name="x_pos" default="0.0"/>
+  <arg name="y_pos" default="0.0"/>
+  <arg name="z_pos" default="0.015"/>
   <include file="$(find gazebo_ros)/launch/empty_world.launch" />
   
-  <node name="tf_footprint_base" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link base_footprint 40" />
+  <!--node name="tf_world" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link base_footprint 40" /-->
   
   <node name="spawn_model" pkg="gazebo_ros" type="spawn_model"
-    args="-file $(find ackermann_robot_description)/urdf/ackermann_robot.urdf -urdf -model ackermann_robot"
+    args="-file $(find ackermann_robot_description)/urdf/ackermann_robot.urdf -urdf -model ackermann_robot -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos)"
     output="screen" />
   <!--Comentar>
   <node name="fake_joint_calibration" pkg="rostopic" type="rostopic" args="pub /calibrated std_msgs/Bool true" /-->

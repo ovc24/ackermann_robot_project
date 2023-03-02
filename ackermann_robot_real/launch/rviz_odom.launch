@@ -1,0 +1,8 @@
+<launch>
+    <!--param name="robot_description" textfile="$(find ackermann_robot_description)/urdf/ackermann_robot_rviz.urdf"/-->
+    <node name="cmd_vel_to_motors" pkg="ackermann_robot_real" type="cmd_vel_to_motors.py"/>
+    <node name="odometry_publisher" pkg="ackermann_robot_real" type="odom_publisher"/>
+    <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/-->
+    <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/-->
+    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find ackermann_robot_real)/config/rviz_config.rviz"/-->
+</launch>

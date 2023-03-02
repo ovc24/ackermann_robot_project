@@ -4,20 +4,11 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot name="ackermann_robot">
   
-  <gazebo>
+  <!--gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <!--robotNamespace>/ackermann_model</robotNamespace-->
+      <robotNamespace>/ackermann_model</robotNamespace>
     </plugin>
-  </gazebo>
-  
-  <link name="base_footprint"/>
-
-  <joint name="base_joint" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link" />
-    <origin xyz="0 0 0.0" rpy="0 0 0"/>
-  </joint>
-
+  </gazebo-->
   <link name="base_link">
     <inertial>
       <origin xyz="8.858E-05 -1.9843E-06 0.020487" rpy="0 0 0" />
@@ -429,7 +420,9 @@
     <parent link="base_link"/>
     <child link="imu_link"/>
   </joint>
- <link name="base_scan">
+
+  
+  <link name="base_scan">
     <visual>
       <origin xyz="0 0 0.0" rpy="0 0 0"/>
       <geometry>
@@ -460,63 +453,4 @@
     <child link="base_scan"/>
     <origin xyz="0.12 0 0.08" rpy="0 0 0.0"/>
   </joint>
-
-  <gazebo>
-    <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
-      <alwaysOn>true</alwaysOn>
-      <bodyName>imu_link</bodyName>
-      <frameName>imu_link</frameName>
-      <topicName>imu</topicName>
-      <serviceName>imu_service</serviceName>
-      <gaussianNoise>0.0</gaussianNoise>
-      <updateRate>0</updateRate>
-      <imu>
-        <noise>
-          <type>gaussian</type>
-          <rate>
-            <mean>0.0</mean>
-            <stddev>2e-4</stddev>
-            <bias_mean>0.0000075</bias_mean>
-            <bias_stddev>0.0000008</bias_stddev>
-          </rate>
-          <accel>
-            <mean>0.0</mean>
-            <stddev>1.7e-2</stddev>
-            <bias_mean>0.1</bias_mean>
-            <bias_stddev>0.001</bias_stddev>
-          </accel>
-        </noise>
-      </imu>
-    </plugin>
-  </gazebo>
-  <gazebo reference="base_scan">
-    <material>Gazebo/FlatBlack</material>
-    <sensor name="lds_lfcd_sensor" type="ray">
-      <pose> 0 0 0 0 0 0 </pose>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>360</samples>
-            <min_angle>-3.14</min_angle>
-            <max_angle>3.14</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>0.30</min>
-          <max>10</max>
-        </range>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.01</stddev>
-        </noise>
-      </ray>
-      <plugin name="gazebo_ros_lds_lfcd_controller" filename="libgazebo_ros_laser.so">
-        <topicName>scan</topicName>
-        <frameName>base_scan</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
 </robot>

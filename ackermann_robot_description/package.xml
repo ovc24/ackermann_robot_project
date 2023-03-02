@@ -55,16 +55,19 @@
   <build_depend>robot_state_publisher</build_depend>
   <build_depend>rviz</build_depend>
   <build_depend>transmission_interface</build_depend>
+  <build_depend>joint_state_publisher_gui</build_depend>
   <build_export_depend>gazebo_ros_control</build_export_depend>
   <build_export_depend>hardware_interface</build_export_depend>
   <build_export_depend>joint_state_publisher</build_export_depend>
   <build_export_depend>robot_state_publisher</build_export_depend>
   <build_export_depend>rviz</build_export_depend>
   <build_export_depend>transmission_interface</build_export_depend>
+  <build_export_depend>joint_state_publisher_gui</build_export_depend>
   <exec_depend>gazebo_ros_control</exec_depend>
   <exec_depend>hardware_interface</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
   <exec_depend>rviz</exec_depend>
   <exec_depend>transmission_interface</exec_depend>
 

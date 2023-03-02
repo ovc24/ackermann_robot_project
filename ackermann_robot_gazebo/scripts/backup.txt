@@ -140,10 +140,12 @@ class _AckermannCtrlr(object):
         # Parameters
 
         # Wheels
-        (left_steer_link_name, left_steer_ctrlr_name, self._left_front_inv_circ) = \
+        (left_steer_link_name, left_steer_ctrlr_name,
+         left_front_axle_ctrlr_name, self._left_front_inv_circ) = \
                 self._get_front_wheel_params("left")
 
-        (right_steer_link_name, right_steer_ctrlr_name, self._right_front_inv_circ) = \
+        (right_steer_link_name, right_steer_ctrlr_name,
+         right_front_axle_ctrlr_name, self._right_front_inv_circ) = \
                 self._get_front_wheel_params("right")
 
         (left_rear_link_name, left_rear_axle_ctrlr_name,
@@ -236,14 +238,12 @@ class _AckermannCtrlr(object):
         tfl = tf.TransformListener()
         ls_pos = self._get_link_pos(tfl, left_steer_link_name)
         rs_pos = self._get_link_pos(tfl, right_steer_link_name)
-        self._joint_dist_div_2 = numpy.linalg.norm(ls_pos - rs_pos)/2
-        print("joint_dist_div_2: %f", self._joint_dist_div_2)
+        self._joint_dist_div_2 = numpy.linalg.norm(ls_pos - rs_pos) / 2
         lrw_pos = self._get_link_pos(tfl, left_rear_link_name)
         rrw_pos = numpy.array([0.0] * 3)
         front_cent_pos = (ls_pos + rs_pos) / 2     # Front center position
         rear_cent_pos = (lrw_pos + rrw_pos) / 2    # Rear center position
         self._wheelbase = numpy.linalg.norm(front_cent_pos - rear_cent_pos)
-        print("Wheelbase: %f", self._wheelbase)
         self._inv_wheelbase = 1 / self._wheelbase  # Inverse of _wheelbase
         self._wheelbase_sqr = self._wheelbase ** 2
 
@@ -254,10 +254,10 @@ class _AckermannCtrlr(object):
         self._right_steer_cmd_pub = \
             _create_cmd_pub(list_ctrlrs, right_steer_ctrlr_name)
 
-        '''self._left_front_axle_cmd_pub = \
+        self._left_front_axle_cmd_pub = \
             _create_axle_cmd_pub(list_ctrlrs, left_front_axle_ctrlr_name)
         self._right_front_axle_cmd_pub = \
-            _create_axle_cmd_pub(list_ctrlrs, right_front_axle_ctrlr_name)'''
+            _create_axle_cmd_pub(list_ctrlrs, right_front_axle_ctrlr_name)
         self._left_rear_axle_cmd_pub = \
             _create_axle_cmd_pub(list_ctrlrs, left_rear_axle_ctrlr_name)
         self._right_rear_axle_cmd_pub = \
@@ -299,17 +299,17 @@ class _AckermannCtrlr(object):
             # Publish the steering and axle joint commands.
             self._left_steer_cmd_pub.publish(self._theta_left)
             self._right_steer_cmd_pub.publish(self._theta_right)
-            '''if self._left_front_axle_cmd_pub:
+            if self._left_front_axle_cmd_pub:
                 self._left_front_axle_cmd_pub.publish(self._left_front_ang_vel)
             if self._right_front_axle_cmd_pub:
                 self._right_front_axle_cmd_pub.\
-                    publish(self._right_front_ang_vel)'''
+                    publish(self._right_front_ang_vel)
             if self._left_rear_axle_cmd_pub:
                 self._left_rear_axle_cmd_pub.publish(self._left_rear_ang_vel)
             if self._right_rear_axle_cmd_pub:
                 self._right_rear_axle_cmd_pub.publish(self._right_rear_ang_vel)
 
-            #self._sleep_timer.sleep()
+            self._sleep_timer.sleep()
 
     def ackermann_cmd_cb(self, ackermann_cmd):
         """Ackermann driving command callback
@@ -335,18 +335,8 @@ class _AckermannCtrlr(object):
                                           side + "_steering_link")
         steer_ctrlr_name = rospy.get_param(prefix + "steering_controller_name",
                                            side + "_steering_controller")
-        #axle_ctrlr_name, inv_circ = self._get_common_wheel_params(prefix)
-        try:
-            dia = float(rospy.get_param(prefix + "diameter",
-                                        self._DEF_WHEEL_DIA))
-            if dia <= 0.0:
-                raise ValueError()
-        except:
-            rospy.logwarn("The specified wheel diameter is invalid. "
-                          "The default diameter will be used instead.")
-            dia = self._DEF_WHEEL_DIA
-
-        return steer_link_name, steer_ctrlr_name, 1/(pi*dia)
+        axle_ctrlr_name, inv_circ = self._get_common_wheel_params(prefix)
+        return steer_link_name, steer_ctrlr_name, axle_ctrlr_name, inv_circ
 
     def _get_rear_wheel_params(self, side):
         # Get rear wheel parameters. Return a tuple containing the link name,
@@ -406,12 +396,10 @@ class _AckermannCtrlr(object):
         # Compute the desired steering angles for the left and right front
         # wheels.
         center_y = self._wheelbase * math.tan((pi / 2) - theta)
-        center_y = -0.1022*center_y**2 + 0.7669*center_y + 0.0171
         #print(center_y)
         steer_ang_changed = theta != self._last_steer_ang
         if steer_ang_changed:
             self._last_steer_ang = theta
-            print("theta: %f", self._last_steer_ang)
             self._theta_left = \
                 _get_steer_ang(math.atan(self._inv_wheelbase *
                                          (center_y - self._joint_dist_div_2)))
